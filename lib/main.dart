@@ -55,11 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static void callback(String s) async {
     print("I am from main.dart");
+    count = 1;
     print(s);
-    Directory appDocDir = await getApplicationSupportDirectory();
-    Directory(appDocDir.path + '/rec_storage/');
-    File file = File('${appDocDir.path}/startAt${DateTime.now().millisecondsSinceEpoch}');
-    file.create();
   }
 
   @override
