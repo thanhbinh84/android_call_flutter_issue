@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:memory_issue/event_channel.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'initiate_calls_to_dart_in_bg.dart';
@@ -38,6 +40,29 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  static const stream = EventChannel('com.chamelalaboratory.demo.flutter_event_channel/eventChannel');
+
+  late StreamSubscription _streamSubscription;
+  double _currentValue = 0.0;
+
+  void _startListener() {
+    _streamSubscription = stream.receiveBroadcastStream().listen(_listenStream);
+  }
+
+  void _cancelListener() {
+    _streamSubscription.cancel();
+    setState(() {
+      _currentValue = 0;
+    });
+  }
+
+  void _listenStream(value) {
+    debugPrint("Received From Native:  $value\n");
+    setState(() {
+      _currentValue = value;
+    });
+  }
+
   static const platform = MethodChannel('com.example.app');
   void _incrementCounter() async {
     // final result = await platform.invokeMethod('test');
@@ -48,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    _startListener();
     super.initState();
   }
 
@@ -70,13 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
             Text(
-              '',
-              style: Theme.of(context).textTheme.headlineMedium,
+              'You have pushed the button this many times: $_currentValue',
             ),
+
           ],
         ),
       ),

@@ -9,6 +9,14 @@ import io.flutter.plugin.common.MethodChannel;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import android.os.Bundle;
+import android.os.Handler;
+
+import java.util.Objects;
+
+import io.flutter.Log;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.plugin.common.EventChannel;
 
 public class MainActivity extends FlutterActivity {
 
@@ -36,6 +44,8 @@ public class MainActivity extends FlutterActivity {
                             }
                         }
                 );
+
+
     }
 
     @Override
@@ -48,4 +58,6 @@ public class MainActivity extends FlutterActivity {
         } else
             System.out.println("_result null");
     }
+
+
 }
