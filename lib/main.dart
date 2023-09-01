@@ -39,8 +39,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  static const stream = EventChannel('com.chamelalaboratory.demo.flutter_event_channel/eventChannel');
+  static const stream = EventChannel(
+      'com.chamelalaboratory.demo.flutter_event_channel/eventChannel');
 
   late StreamSubscription _streamSubscription;
   double _currentValue = 0.0;
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // final result = await platform.invokeMethod('test');
     // print('result: $result');
     print("count = $count");
-    InitiateCalls.test(callback);
+    InitiateCalls.test2();
   }
 
   @override
@@ -99,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times: $_currentValue',
             ),
-
           ],
         ),
       ),
@@ -110,5 +109,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
 }

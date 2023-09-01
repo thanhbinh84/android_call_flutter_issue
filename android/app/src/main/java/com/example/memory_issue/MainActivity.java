@@ -27,7 +27,7 @@ public class MainActivity extends FlutterActivity {
     public static final String CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatcher_handle_key";
 
     public static final String STREAM = "com.chamelalaboratory.demo.flutter_event_channel/eventChannel";
-    private EventChannel.EventSink attachEvent;
+    static public EventChannel.EventSink attachEvent;
     final String TAG_NAME = "From_Native";
     private int count = 1;
     private Handler handler;
@@ -37,7 +37,7 @@ public class MainActivity extends FlutterActivity {
         public void run() {
             int TOTAL_COUNT = 100;
             if (count > TOTAL_COUNT) {
-                attachEvent.endOfStream();
+                // attachEvent.endOfStream();
             } else {
                 double percentage = ((double) count / TOTAL_COUNT);
                 Log.w(TAG_NAME, "\nParsing From Native:  " + percentage);
@@ -51,6 +51,7 @@ public class MainActivity extends FlutterActivity {
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+        
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
@@ -62,6 +63,11 @@ public class MainActivity extends FlutterActivity {
                                 long callbackHandle = (long) args.get(1);
                                 intent.putExtra(CALLBACK_HANDLE_KEY, callbackHandle);
                                 intent.putExtra(CALLBACK_DISPATCHER_HANDLE_KEY, mCallbackDispatcherHandle);
+                                startActivityForResult(intent, RQ_CODE);
+                            }
+                            if (call.method.equals("test2")) {
+                                Intent intent = new Intent(this, SecondActivity.class);
+                                
                                 startActivityForResult(intent, RQ_CODE);
                             }
                         }
@@ -96,6 +102,7 @@ public class MainActivity extends FlutterActivity {
         super.onDestroy();
         handler.removeCallbacks(runnable);
         handler = null;
+        // attachEvent.endOfStream();
         attachEvent = null;
     }
 
