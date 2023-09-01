@@ -26,6 +26,28 @@ public class MainActivity extends FlutterActivity {
     public static final String CALLBACK_HANDLE_KEY = "callback_handle_key";
     public static final String CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatcher_handle_key";
 
+    public static final String STREAM = "com.chamelalaboratory.demo.flutter_event_channel/eventChannel";
+    private EventChannel.EventSink attachEvent;
+    final String TAG_NAME = "From_Native";
+    private int count = 1;
+    private Handler handler;
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            int TOTAL_COUNT = 100;
+            if (count > TOTAL_COUNT) {
+                attachEvent.endOfStream();
+            } else {
+                double percentage = ((double) count / TOTAL_COUNT);
+                Log.w(TAG_NAME, "\nParsing From Native:  " + percentage);
+                attachEvent.success(percentage);
+            }
+            count++;
+            handler.postDelayed(this, 200);
+        }
+    };
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
@@ -45,7 +67,36 @@ public class MainActivity extends FlutterActivity {
                         }
                 );
 
+        new EventChannel(Objects.requireNonNull(getFlutterEngine()).getDartExecutor(), STREAM).setStreamHandler(
+                new EventChannel.StreamHandler() {
+                    @Override
+                    public void onListen(Object args, final EventChannel.EventSink events) {
+                        Log.w(TAG_NAME, "Adding listener");
+                        attachEvent = events;
+                        count = 1;
+                        handler = new Handler();
+                        runnable.run();
+                    }
 
+                    @Override
+                    public void onCancel(Object args) {
+                        Log.w(TAG_NAME, "Cancelling listener");
+                        handler.removeCallbacks(runnable);
+                        handler = null;
+                        count = 1;
+                        attachEvent = null;
+                        System.out.println("StreamHandler - onCanceled: ");
+                    }
+                }
+        );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+        handler = null;
+        attachEvent = null;
     }
 
     @Override
