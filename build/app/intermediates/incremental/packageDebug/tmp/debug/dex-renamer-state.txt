@@ -1,0 +1,4 @@
+#Thu Aug 31 19:30:50 ICT 2023
+base.0=/Users/ntbinh/Data/Dev - R/Acorai/ref/memory_issue/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
