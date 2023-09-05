@@ -1,8 +1,5 @@
 package com.example.memory_issue;
 
-import static com.example.memory_issue.MainActivity.CALLBACK_DISPATCHER_HANDLE_KEY;
-import static com.example.memory_issue.MainActivity.CALLBACK_HANDLE_KEY;
-
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -30,17 +27,10 @@ public class SecondActivity extends FlutterActivity {
             finish();
         });
         findViewById(R.id.textView1).setOnClickListener(view -> {
-//            for (int i = 0; i < 200; i++) {
-//                String[] arrays = new String[10000000];
-//                System.out.println(i);
-//            }
             callFlutterFunction();
         });
     }
     
-    final String TAG_NAME = "From_Native";
-    private int count = 1;
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

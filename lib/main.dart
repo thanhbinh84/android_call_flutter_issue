@@ -1,12 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:memory_issue/event_channel.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'initiate_calls_to_dart_in_bg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,8 +34,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const stream = EventChannel(
-      'com.chamelalaboratory.demo.flutter_event_channel/eventChannel');
+  static const stream = EventChannel('eventChannel');
+  static const MethodChannel _channel = MethodChannel('main_channel');
 
   late StreamSubscription _streamSubscription;
   double _currentValue = 0.0;
@@ -51,9 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _cancelListener() {
     _streamSubscription.cancel();
-    setState(() {
-      _currentValue = 0;
-    });
   }
 
   void _listenStream(value) {
@@ -63,12 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  static const platform = MethodChannel('com.example.app');
   void _incrementCounter() async {
-    // final result = await platform.invokeMethod('test');
-    // print('result: $result');
-    print("count = $count");
-    InitiateCalls.test2();
+    print("count = $_currentValue");
+    _channel.invokeMethod('test');
   }
 
   @override
@@ -77,12 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  static int? count;
-
-  static void callback(String s) async {
-    print("I am from main.dart");
-    count = 1;
-    print(s);
+  @override
+  void dispose() {
+    _cancelListener();
+    super.dispose();
   }
 
   @override
